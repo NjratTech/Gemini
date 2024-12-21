@@ -1,41 +1,26 @@
-const apiKey = 'AIzaSyBF0e4_Qzn6RzvpmTql0qh4lVLr1ZRM9gQ';
-
-/*
- * Install the Generative AI SDK
- *
- * $ npm install @google/generative-ai
- *
- * See the getting started guide for more information
- * https://ai.google.dev/gemini-api/docs/get-started/node
- */
-
-/*const {
-    GoogleGenerativeAI,
-    HarmCategory,
-    HarmBlockThreshold,
-} = require("@google/generative-ai");*/
-
 import {
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
 } from "@google/generative-ai";
 
-// const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDY9Ov4lAqHCgfMTiSWgFHIU5lTtbEd7dk';
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro-latest",
+    model: "gemini-2.0-flash-exp",
 });
 
 const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
+    temperature: 1, 
+    topP: 0.95, 
     topK: 64,
-    maxOutputTokens: 8192,
+    maxOutputTokens: 8192, 
     responseMimeType: "text/plain",
 };
 
+// Настройки безопасности
 const safetySettings = [
     {
         category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -56,15 +41,21 @@ const safetySettings = [
 ];
 
 async function run(prompt) {
-    const chatSession = model.startChat({
-        generationConfig,
-        safetySettings,
-        history: [],
-    });
+    try {
+        const chatSession = model.startChat({
+            generationConfig,
+            safetySettings,
+            history: [],
+        });
 
-    const result = await chatSession.sendMessage(prompt);
-    console.log(result.response.text());
-    return result.response.text();
+        const result = await chatSession.sendMessage(prompt);
+        const responseText = result.response.text();
+        console.log("Response from Gemini:", responseText);
+        return responseText;
+    } catch (error) {
+        console.error("Error during Gemini API call:", error);
+        throw new Error("Failed to process the request with Gemini API."); // переброс ошибки
+    }
 }
 
 export default run;
