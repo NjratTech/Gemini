@@ -1,4 +1,4 @@
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = 'AIzaSyBF0e4_Qzn6RzvpmTql0qh4lVLr1ZRM9gQ';
 
 /*
  * Install the Generative AI SDK
